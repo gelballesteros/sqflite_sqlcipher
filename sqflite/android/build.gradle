@@ -1,41 +1,49 @@
-/*
- * android/build.gradle  ─ para el fork de sqflite_sqlcipher
- *  ─────────────────────────────────────────────────────────
- *  - Un solo namespace
- *  - Se importa flutter.gradle (ahí está flutter.jar)
- *  - Sin bloques buildscript ni AGP propios: la versión la
- *    marca tu aplicación (Flutter usa AGP 8.1.4)
- */
+group 'com.davidmartos96.sqflite_sqlcipher'
+version '1.0-SNAPSHOT'
 
-import java.util.Properties
-
-/* ────────────────── ① lee local.properties para saber
-                       dónde está el SDK de Flutter ───── */
-def localProps = new Properties()
-def localPropsFile = rootProject.file('../../../../local.properties')
-if (localPropsFile.exists()) {
-    localPropsFile.withInputStream { localProps.load(it) }
-}
-def flutterRoot = localProps.getProperty('flutter.sdk')
-
-apply plugin: 'com.android.library'
-apply from : "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-
-/* ────────────────── ② configuración Android del plugin ───── */
-android {
-    namespace 'com.davidmartos96.sqflite_sqlcipher'   // 1 solo
-    compileSdkVersion 34                              // o herédalo
-
-    defaultConfig {
-        minSdkVersion 19
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
     }
 
-    lintOptions { disable 'InvalidPackage' }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:8.3.0'
+    }
 }
 
-/* ────────────────── ③ dependencias Java/Kotlin opcionales ─ */
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdk 34
+
+    namespace 'com.davidmartos96.sqflite_sqlcipher'
+
+    compileOptions {
+      sourceCompatibility JavaVersion.VERSION_17
+      targetCompatibility JavaVersion.VERSION_17
+    }
+
+    defaultConfig {
+        minSdk 21
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+}
+
 dependencies {
-    implementation 'androidx.annotation:annotation:1.7.0'
-    testImplementation 'junit:junit:4.13.2'
+    implementation 'net.zetetic:sqlcipher-android:4.5.7@aar'
+
+    // We need to use a version compatible with sqlcipher. See here:
+    // https://github.com/sqlcipher/sqlcipher-android/blob/c5bd0cf2a2d26cd977d6127180f594750675093e/build.gradle#L34
+    implementation 'androidx.sqlite:sqlite:2.3.1'
 }
