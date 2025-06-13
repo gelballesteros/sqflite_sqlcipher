@@ -1,49 +1,36 @@
 group 'com.tekartik.sqflite'
 version '1.0-SNAPSHOT'
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
+/* ①  —►  imprescindible para que el plugin encuentre las clases de Flutter */
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:4.1.0'
-    }
-}
-
-rootProject.allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
-allprojects {
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-        }
-    }
+/* ②  —►  si quieres mantener repositorios propios, déjalos pero
+           elimina el bloque buildscript con AGP 4.x; la versión la
+           aportará la aplicación principal */
+repositories {
+    google()
+    mavenCentral()
 }
 
 apply plugin: 'com.android.library'
 
 android {
-     namespace "com.tekartik.sqflite"
-    compileSdkVersion 31
-
+    /* ②  —►  solo un namespace */
     namespace 'com.davidmartos96.sqflite_sqlcipher'
 
+    /* compileSdk lo hereda de flutter.gradle; si lo quieres fijo: */
+    // compileSdkVersion 34
+
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 19          // igual que el plugin original
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-    lintOptions {
-        disable 'InvalidPackage'
-    }
+
+    lintOptions { disable 'InvalidPackage' }
 }
 
+/* Dependencias que quieras añadir al plugin */
 dependencies {
-    testImplementation 'junit:junit:4.13.1'
+    implementation "androidx.annotation:annotation:1.7.0"
+    testImplementation 'junit:junit:4.13.2'
 }
