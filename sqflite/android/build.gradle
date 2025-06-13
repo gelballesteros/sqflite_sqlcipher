@@ -1,36 +1,41 @@
-group 'com.tekartik.sqflite'
-version '1.0-SNAPSHOT'
+/*
+ * android/build.gradle  ─ para el fork de sqflite_sqlcipher
+ *  ─────────────────────────────────────────────────────────
+ *  - Un solo namespace
+ *  - Se importa flutter.gradle (ahí está flutter.jar)
+ *  - Sin bloques buildscript ni AGP propios: la versión la
+ *    marca tu aplicación (Flutter usa AGP 8.1.4)
+ */
 
-/* ①  —►  imprescindible para que el plugin encuentre las clases de Flutter */
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+import java.util.Properties
 
-/* ②  —►  si quieres mantener repositorios propios, déjalos pero
-           elimina el bloque buildscript con AGP 4.x; la versión la
-           aportará la aplicación principal */
-repositories {
-    google()
-    mavenCentral()
+/* ────────────────── ① lee local.properties para saber
+                       dónde está el SDK de Flutter ───── */
+def localProps = new Properties()
+def localPropsFile = rootProject.file('../../../../local.properties')
+if (localPropsFile.exists()) {
+    localPropsFile.withInputStream { localProps.load(it) }
 }
+def flutterRoot = localProps.getProperty('flutter.sdk')
 
 apply plugin: 'com.android.library'
+apply from : "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+/* ────────────────── ② configuración Android del plugin ───── */
 android {
-    /* ②  —►  solo un namespace */
-    namespace 'com.davidmartos96.sqflite_sqlcipher'
-
-    /* compileSdk lo hereda de flutter.gradle; si lo quieres fijo: */
-    // compileSdkVersion 34
+    namespace 'com.davidmartos96.sqflite_sqlcipher'   // 1 solo
+    compileSdkVersion 34                              // o herédalo
 
     defaultConfig {
-        minSdkVersion 19          // igual que el plugin original
+        minSdkVersion 19
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     lintOptions { disable 'InvalidPackage' }
 }
 
-/* Dependencias que quieras añadir al plugin */
+/* ────────────────── ③ dependencias Java/Kotlin opcionales ─ */
 dependencies {
-    implementation "androidx.annotation:annotation:1.7.0"
+    implementation 'androidx.annotation:annotation:1.7.0'
     testImplementation 'junit:junit:4.13.2'
 }
