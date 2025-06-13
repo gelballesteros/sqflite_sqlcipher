@@ -1,19 +1,22 @@
-apply plugin: 'com.android.library'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle" // <- imprescindible
+// android/build.gradle   (sqflite_sqlcipher)
+
+def flutterRoot = rootProject.ext.flutterRoot
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    namespace "com.davidmartos96.sqflite_sqlcipher"
-    compileSdkVersion 34          // o el que uses
+    namespace "com.davidmartos96.sqflite_sqlcipher"   // o el que quieras
+    compileSdkVersion 34
 
     defaultConfig {
-        minSdkVersion 19
-        consumerProguardFiles 'consumer-rules.pro'
+        minSdkVersion 21
     }
-    lint { disable 'InvalidPackage' }
+
+    // Evita la advertencia de namespace duplicado en AGP 8+
+    lintOptions {
+        disable 'InvalidPackage'
+    }
 }
 
-/* El script anterior ya declara compileOnly las libs de Flutter,
-   así que aquí solo añades lo que sea tuyo (por ejemplo junit) */
 dependencies {
-    testImplementation "junit:junit:4.13.2"
+    // NADA más: flutter.gradle añade flutter.jar automáticamente
 }
