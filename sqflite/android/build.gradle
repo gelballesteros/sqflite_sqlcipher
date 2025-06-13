@@ -1,49 +1,19 @@
-group 'com.davidmartos96.sqflite_sqlcipher'
-version '1.0-SNAPSHOT'
-
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:8.3.0'
-    }
-}
-
-rootProject.allprojects {
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
 apply plugin: 'com.android.library'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle" // <- imprescindible
 
 android {
-    compileSdk 34
-
-    namespace 'com.davidmartos96.sqflite_sqlcipher'
-
-    compileOptions {
-      sourceCompatibility JavaVersion.VERSION_17
-      targetCompatibility JavaVersion.VERSION_17
-    }
+    namespace "com.davidmartos96.sqflite_sqlcipher"
+    compileSdkVersion 34          // o el que uses
 
     defaultConfig {
-        minSdk 21
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        minSdkVersion 19
+        consumerProguardFiles 'consumer-rules.pro'
     }
-    lintOptions {
-        disable 'InvalidPackage'
-    }
+    lint { disable 'InvalidPackage' }
 }
 
+/* El script anterior ya declara compileOnly las libs de Flutter,
+   así que aquí solo añades lo que sea tuyo (por ejemplo junit) */
 dependencies {
-    implementation 'net.zetetic:sqlcipher-android:4.5.7@aar'
-
-    // We need to use a version compatible with sqlcipher. See here:
-    // https://github.com/sqlcipher/sqlcipher-android/blob/c5bd0cf2a2d26cd977d6127180f594750675093e/build.gradle#L34
-    implementation 'androidx.sqlite:sqlite:2.3.1'
+    testImplementation "junit:junit:4.13.2"
 }
